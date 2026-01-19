@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teraplaydown</title>
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#f0f2f5;
+  font-family:Segoe UI,sans-serif;
+}
+.btn{
+  background:#2481cc;
+  color:#fff;
+  padding:18px 36px;
+  border-radius:50px;
+  font-size:20px;
+  font-weight:700;
+  text-decoration:none;
+}
+</style>
+</head>
+
+<body>
+
+<a id="go" class="btn" href="#">Go To Download Page</a>
+
+<script>
+const p = new URLSearchParams(location.search);
+const link = p.get("link");
+
+document.getElementById("go").onclick = (e) => {
+  e.preventDefault();
+  if(!link){
+    alert("Invalid link");
+    return;
+  }
+
+  const play =
+    "https://videoplay-2ym.pages.dev/?url=" +
+    encodeURIComponent(link);
+
+  const ad =
+    "https://www.effectivegatecpm.com/hamfxc0cre?key=98b8b86d55734c2055e254a6a0e2c5d8";
+
+  if(/Android/i.test(navigator.userAgent)){
+    location.href =
+      "intent://" +
+      play.replace(/^https?:\/\//,"") +
+      "#Intent;scheme=https;package=com.android.chrome;end";
+
+    setTimeout(()=>location.href=ad,800);
+  } else {
+    window.open(play,"_blank");
+    location.href=ad;
+  }
+};
+</script>
+
+</body>
+</html>
