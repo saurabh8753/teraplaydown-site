@@ -62,7 +62,6 @@ body{
   const adUrl =
     "https://www.effectivegatecpm.com/hamfxc0cre?key=98b8b86d55734c2055e254a6a0e2c5d8";
 
-  // ⏳ Small delay for better Chrome intent success
   setTimeout(() => {
 
     if (/Android/i.test(navigator.userAgent)) {
@@ -71,16 +70,17 @@ body{
         playUrl.replace(/^https?:\/\//, "") +
         "#Intent;scheme=https;package=com.android.chrome;end";
 
+      // 1️⃣ Open video page in Chrome
       window.location.href = intent;
 
-      // Ad redirect after opening play page
+      // 2️⃣ Replace CURRENT page with Ad page
       setTimeout(() => {
-        window.location.href = adUrl;
+        window.location.replace(adUrl);
       }, 900);
 
     } else {
       window.open(playUrl, "_blank");
-      window.location.href = adUrl;
+      window.location.replace(adUrl);
     }
 
   }, 800);
