@@ -47,8 +47,7 @@ body{
 
 <script>
 (function () {
-
-  const params = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(location.search);
   const teraboxLink = params.get("link");
 
   if (!teraboxLink) {
@@ -56,31 +55,35 @@ body{
     return;
   }
 
-  // 🎬 VIDEO PAGE
   const playUrl =
     "https://videoplay-2ym.pages.dev/?url=" +
     encodeURIComponent(teraboxLink);
 
-  // 💰 SMART LINK (AD)
-  const smartLink =
+  const adUrl =
     "https://www.effectivegatecpm.com/hamfxc0cre?key=98b8b86d55734c2055e254a6a0e2c5d8";
 
   setTimeout(() => {
 
-    // 1️⃣ OPEN VIDEO IN NEW TAB
-    const videoTab = window.open(playUrl, "_blank");
+    if (/Android/i.test(navigator.userAgent)) {
+      const intent =
+        "intent://" +
+        playUrl.replace(/^https?:\/\//, "") +
+        "#Intent;scheme=https;package=com.android.chrome;end";
 
-    if (videoTab) {
-      videoTab.focus();
+      // 1️⃣ Open video page in Chrome
+      window.location.href = intent;
+
+      // 2️⃣ Replace CURRENT page with Ad page
+      setTimeout(() => {
+        window.location.replace(adUrl);
+      }, 900);
+
+    } else {
+      window.open(playUrl, "_blank");
+      window.location.replace(adUrl);
     }
 
-    // 2️⃣ REPLACE CURRENT TAB WITH SMART LINK
-    setTimeout(() => {
-      window.location.replace(smartLink);
-    }, 800);
-
-  }, 900);
-
+  }, 800);
 })();
 </script>
 
