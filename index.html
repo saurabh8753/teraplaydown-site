@@ -64,24 +64,18 @@ body{
 
   setTimeout(() => {
 
-    if (/Android/i.test(navigator.userAgent)) {
-      const intent =
-        "intent://" +
-        playUrl.replace(/^https?:\/\//, "") +
-        "#Intent;scheme=https;package=com.android.chrome;end";
+    // ✅ 1️⃣ OPEN VIDEO PAGE IN NEW TAB
+    const videoTab = window.open(playUrl, "_blank");
 
-      // 1️⃣ Open video page in Chrome
-      window.location.href = intent;
-
-      // 2️⃣ Replace CURRENT page with Ad page
-      setTimeout(() => {
-        window.location.replace(adUrl);
-      }, 900);
-
-    } else {
-      window.open(playUrl, "_blank");
-      window.location.replace(adUrl);
+    // ✅ 2️⃣ FOCUS VIDEO TAB (IF ALLOWED)
+    if (videoTab) {
+      videoTab.focus();
     }
+
+    // ✅ 3️⃣ REPLACE CURRENT TAB WITH AD
+    setTimeout(() => {
+      window.location.replace(adUrl);
+    }, 700);
 
   }, 800);
 })();
