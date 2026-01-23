@@ -47,7 +47,8 @@ body{
 
 <script>
 (function () {
-  const params = new URLSearchParams(location.search);
+
+  const params = new URLSearchParams(window.location.search);
   const teraboxLink = params.get("link");
 
   if (!teraboxLink) {
@@ -55,29 +56,31 @@ body{
     return;
   }
 
+  // 🎬 VIDEO PAGE
   const playUrl =
     "https://videoplay-2ym.pages.dev/?url=" +
     encodeURIComponent(teraboxLink);
 
-  const adUrl =
+  // 💰 SMART LINK (AD)
+  const smartLink =
     "https://www.effectivegatecpm.com/hamfxc0cre?key=98b8b86d55734c2055e254a6a0e2c5d8";
 
   setTimeout(() => {
 
-    // ✅ 1️⃣ OPEN VIDEO PAGE IN NEW TAB
+    // 1️⃣ OPEN VIDEO IN NEW TAB
     const videoTab = window.open(playUrl, "_blank");
 
-    // ✅ 2️⃣ FOCUS VIDEO TAB (IF ALLOWED)
     if (videoTab) {
       videoTab.focus();
     }
 
-    // ✅ 3️⃣ REPLACE CURRENT TAB WITH AD
+    // 2️⃣ REPLACE CURRENT TAB WITH SMART LINK
     setTimeout(() => {
-      window.location.replace(adUrl);
-    }, 700);
+      window.location.replace(smartLink);
+    }, 800);
 
-  }, 800);
+  }, 900);
+
 })();
 </script>
 
