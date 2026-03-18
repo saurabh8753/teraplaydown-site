@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DesiInsta - Downloader</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,sans-serif;}
+body{background:linear-gradient(135deg,#4f46e5,#9333ea,#ec4899);min-height:100vh;color:white;}
+
+.topbar{background:#4338ca;padding:14px 18px;font-weight:600;}
+.hero{text-align:center;padding:40px 20px 20px;}
+.hero h1{font-size:30px;}
+.hero p{margin-top:10px;opacity:0.9;font-size:15px;}
+
+.card{max-width:500px;margin:20px auto;padding:20px;border-radius:25px;background:rgba(255,255,255,0.15);backdrop-filter:blur(20px);}
+
+.input-box{display:flex;background:white;border-radius:14px;overflow:hidden;}
+.input-box input{flex:1;border:none;padding:14px;font-size:14px;outline:none;}
+.input-box button{background:#f3e8ff;border:none;padding:0 15px;font-weight:600;cursor:pointer;}
+
+.download-btn{
+margin-top:18px;width:100%;padding:16px;border:none;border-radius:16px;
+font-size:16px;font-weight:600;cursor:pointer;color:white;
+background:linear-gradient(90deg,#22c55e,#16a34a);
+}
+
+.loader{text-align:center;margin-top:15px;}
+.spinner{
+width:28px;height:28px;border:4px solid rgba(255,255,255,0.3);
+border-top:4px solid white;border-radius:50%;
+animation:spin 0.6s linear infinite;margin:auto;
+}
+
+@keyframes spin{
+0%{transform:rotate(0deg);}
+100%{transform:rotate(360deg);}
+}
+
+.result{margin-top:20px;}
+
+.media-card{
+background:white;border-radius:20px;padding:15px;margin-top:20px;
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+.media-wrapper{position:relative;border-radius:18px;overflow:hidden;}
+
+.thumb-img{width:100%;border-radius:18px;}
+
+.media-wrapper video{
+width:100%;
+display:none;
+border-radius:18px;
+}
+
+.play-btn{
+position:absolute;top:50%;left:50%;
+transform:translate(-50%,-50%);
+background:rgba(0,0,0,0.65);
+width:65px;height:65px;border-radius:50%;
+display:flex;align-items:center;justify-content:center;
+font-size:26px;color:white;cursor:pointer;
+}
+
+.pro-download-btn{
+display:block;margin-top:12px;padding:14px;border-radius:30px;
+text-align:center;text-decoration:none;font-weight:600;
+color:white;background:linear-gradient(90deg,#38bdf8,#0ea5e9);
+}
+
+.meta{color:black;margin-top:8px;font-size:13px;}
+.error{margin-top:15px;color:#ffe4e6;text-align:center;}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">Desi-Insta</div>
+
+<div class="hero">
+<h1>Instagram Downloader</h1>
+<p>Download Instagram, Reels, Photos, Stories instantly</p>
+</div>
+
+<div class="card">
+
+<div class="input-box">
+<input type="text" id="url" placeholder="Paste URL here">
+<button onclick="paste()">Paste</button>
+</div>
+
+<button class="download-btn" id="btn" onclick="download()">Download</button>
+
+<div class="loader" id="loader"></div>
+<div class="error" id="error"></div>
+<div class="result" id="result"></div>
+
+</div>
+
+<script>
+
+// 🔥 YOUR SMART LINK
+const AD_LINK = "https://yawncollaremotion.com/yvc33vhcr?key=392e8fc7e7a5aa8ee592724f8804ce9a";
+
+// paste
+function paste(){
+navigator.clipboard.readText().then(text=>{
+document.getElementById("url").value=text;
+detectType(text);
+});
+}
+
+// detect
+function detectType(url){
+let type="Instagram Post";
+if(url.includes("/reel/")) type="Instagram Reel";
+if(url.includes("/stories/")) type="Instagram Story";
+document.getElementById("error").innerText="Detected: "+type;
+}
+
+document.getElementById("url").addEventListener("input",(e)=>{
+detectType(e.target.value);
+});
+
+// 🔥 SMART DOWNLOAD FUNCTION
+function handleDownload(url){
+
+  // 1️⃣ Open Ad
+  window.open(AD_LINK, "_blank");
+
+  // 2️⃣ Start Download
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "video.mp4";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+// MAIN
+async function download(){
+
+const btn=document.getElementById("btn");
+const url=document.getElementById("url").value.trim();
+
+const loader=document.getElementById("loader");
+const error=document.getElementById("error");
+const result=document.getElementById("result");
+
+error.innerText="";
+result.innerHTML="";
+loader.innerHTML='<div class="spinner"></div>';
+
+btn.disabled=true;
+btn.innerText="Fetching Preview...";
+
+try{
+
+const res=await fetch(`https://universal-downloaders.vercel.app/api/meta/download?url=${encodeURIComponent(url)}`);
+const json=await res.json();
+
+loader.innerHTML="";
+btn.disabled=false;
+btn.innerText="Download";
+
+if(json.success){
+
+const items=json?.data?.data || [];
+
+items.forEach((item,index)=>{
+
+const mediaUrl=item.url || "";
+const thumb=item.thumbnail || "";
+
+const isVideo = mediaUrl.includes(".mp4");
+
+const card=document.createElement("div");
+card.className="media-card";
+
+if(isVideo){
+
+card.innerHTML=`
+<div class="media-wrapper">
+${thumb ? `<img src="${thumb}" class="thumb-img">` : ""}
+<div class="play-btn">▶</div>
+<video src="${mediaUrl}" controls></video>
+</div>
+
+<p class="meta">Media ${index+1} • Video</p>
+
+<a href="#" onclick="handleDownload('${mediaUrl}')" class="pro-download-btn">
+⬇ Download Video
+</a>
+`;
+
+}else{
+
+card.innerHTML=`
+<img src="${mediaUrl}" class="thumb-img">
+
+<p class="meta">Media ${index+1} • Image</p>
+
+<a href="#" onclick="handleDownload('${mediaUrl}')" class="pro-download-btn">
+⬇ Download Image
+</a>
+`;
+}
+
+result.appendChild(card);
+
+});
+
+// play button
+document.querySelectorAll(".play-btn").forEach(btn=>{
+btn.addEventListener("click",function(){
+const wrapper=this.parentElement;
+const img=wrapper.querySelector("img");
+const video=wrapper.querySelector("video");
+
+if(img) img.style.display="none";
+this.style.display="none";
+
+video.style.display="block";
+video.play();
+});
+});
+
+}else{
+error.innerText="No media found";
+}
+
+}catch(e){
+
+loader.innerHTML="";
+btn.disabled=false;
+btn.innerText="Download";
+error.innerText="API error";
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
