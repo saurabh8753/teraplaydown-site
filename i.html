@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Pro Instagram Downloader</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#667eea,#764ba2,#ff0080);
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:20px;
+}
+
+.container{
+width:100%;
+max-width:500px;
+background:rgba(255,255,255,0.15);
+backdrop-filter:blur(20px);
+border-radius:20px;
+padding:25px;
+box-shadow:0 8px 32px rgba(0,0,0,0.2);
+color:white;
+text-align:center;
+}
+
+h1{
+font-size:22px;
+margin-bottom:15px;
+}
+
+input{
+width:100%;
+padding:12px;
+border:none;
+outline:none;
+border-radius:10px;
+margin-top:10px;
+}
+
+button{
+width:100%;
+margin-top:10px;
+padding:12px;
+border:none;
+border-radius:10px;
+background:#ff2d75;
+color:white;
+font-weight:600;
+cursor:pointer;
+}
+
+.loader{
+display:none;
+margin-top:20px;
+}
+
+.spinner{
+border:4px solid rgba(255,255,255,0.2);
+border-top:4px solid white;
+width:40px;
+height:40px;
+border-radius:50%;
+animation:spin 1s linear infinite;
+margin:auto;
+}
+
+@keyframes spin{
+0%{transform:rotate(0deg)}
+100%{transform:rotate(360deg)}
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-top:20px;
+}
+
+.card{
+background:rgba(255,255,255,0.1);
+padding:10px;
+border-radius:15px;
+}
+
+img,video{
+width:100%;
+border-radius:10px;
+}
+
+.download{
+margin-top:8px;
+display:block;
+padding:8px;
+background:#00e676;
+color:black;
+border-radius:8px;
+text-decoration:none;
+font-weight:600;
+font-size:13px;
+}
+
+.type{
+margin-top:10px;
+font-size:13px;
+opacity:0.9;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Instagram Downloader</h1>
+
+<input id="url" placeholder="Paste Instagram Reel / Post / Story">
+
+<button onclick="fetchMedia()">Download</button>
+
+<div class="loader" id="loader">
+<div class="spinner"></div>
+<p>Fetching media...</p>
+</div>
+
+<div id="type" class="type"></div>
+
+<div id="grid" class="grid"></div>
+
+</div>
+
+<script>
+
+async function fetchMedia(){
+
+let url=document.getElementById("url").value
+
+if(!url){
+alert("Paste URL")
+return
+}
+
+document.getElementById("loader").style.display="block"
+document.getElementById("grid").innerHTML=""
+document.getElementById("type").innerText=""
+
+try{
+
+let api=`https://universal-downloaders.vercel.app/api/meta/download?url=${encodeURIComponent(url)}`
+let res=await fetch(api)
+let data=await res.json()
+
+let mediaList=data.data.data
+
+let type="Instagram Post"
+if(url.includes("/reel/")) type="Instagram Reel"
+if(url.includes("/stories/")) type="Instagram Story"
+
+document.getElementById("type").innerText=type + " ("+mediaList.length+" items)"
+
+mediaList.forEach(item=>{
+
+let card=document.createElement("div")
+card.className="card"
+
+if(item.url.includes(".mp4")){
+
+card.innerHTML=`
+<video src="${item.url}" controls></video>
+<a href="${item.url}" class="download" download>Download Video</a>
+`
+
+}else{
+
+card.innerHTML=`
+<img src="${item.url}">
+<a href="${item.url}" class="download" download>Download Image</a>
+`
+
+}
+
+document.getElementById("grid").appendChild(card)
+
+})
+
+document.getElementById("loader").style.display="none"
+
+}catch(e){
+
+alert("Failed to fetch media")
+document.getElementById("loader").style.display="none"
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
